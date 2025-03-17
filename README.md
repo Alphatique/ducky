@@ -37,7 +37,8 @@ export const user = table('user', {
 
 ### Basic Setup
 
-The initialization process varies depending on your bundler (webpack, vite, etc.). For detailed instructions on how to initialize DuckDB Wasm with your specific bundler, please refer to the [official DuckDB Wasm documentation](https://duckdb.org/docs/stable/clients/wasm/instantiation.html).
+> [!IMPORTANT]
+> The initialization process varies depending on your bundler (webpack, vite, etc.). For detailed instructions on how to initialize DuckDB Wasm with your specific bundler, please refer to the [official DuckDB Wasm documentation](https://duckdb.org/docs/stable/clients/wasm/instantiation.html).
 
 Here's an example using Vite:
 
