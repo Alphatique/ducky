@@ -1,0 +1,36 @@
+{
+	"name": "@alphatique/ducky",
+	"version": "0.0.1",
+	"description": "ORM for DuckDB",
+	"exports": {
+		".": {
+			"import": "./dist/index.mjs",
+			"types": "./dist/index.d.mts"
+		},
+		"./types": {
+			"import": "./dist/types.mjs",
+			"types": "./dist/types.d.mts"
+		},
+		"./schema": {
+			"import": "./dist/schema/index.mjs",
+			"types": "./dist/schema/index.d.mts"
+		}
+	},
+	"scripts": {
+		"build": "tsup",
+		"typecheck": "tsc"
+	},
+	"keywords": [],
+	"author": "ramenha0141",
+	"license": "ISC",
+	"packageManager": "pnpm@10.6.3",
+	"dependencies": {
+		"@duckdb/duckdb-wasm": "^1.29.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.9.4",
+		"tsup": "^8.4.0",
+		"typescript": "^5.8.2"
+	},
+	"files": ["./dist"]
+}
