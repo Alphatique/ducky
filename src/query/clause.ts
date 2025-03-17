@@ -1,3 +1,5 @@
+import type * as duckdb from '@duckdb/duckdb-wasm';
+
 import type { AnyTable, InferTableType } from '~/schema/table';
 import type { Sql, sql } from '~/sql';
 
@@ -10,6 +12,12 @@ export type WhereClause<T extends AnyTable> = {
 	) => Sql;
 };
 
-export type ValuesClause<T extends AnyTable> = {
-	values: InferTableType<T>[];
-};
+export type ValuesClause<T extends AnyTable> =
+	| {
+			values: InferTableType<T>[];
+	  }
+	| {
+			type: 'csv' | 'json' | 'parquet';
+			files: any[];
+			protocol: duckdb.DuckDBDataProtocol;
+	  };

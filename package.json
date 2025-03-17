@@ -1,6 +1,6 @@
 {
 	"name": "@alphatique/ducky",
-	"version": "0.1.1",
+	"version": "0.2.1",
 	"description": "ORM for DuckDB",
 	"exports": {
 		".": {
@@ -25,7 +25,8 @@
 	"license": "ISC",
 	"packageManager": "pnpm@10.6.3",
 	"dependencies": {
-		"@duckdb/duckdb-wasm": "^1.29.0"
+		"@duckdb/duckdb-wasm": "^1.29.0",
+		"nanoid": "^5.1.4"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",

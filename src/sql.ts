@@ -46,6 +46,17 @@ export function sql(fragments: TemplateStringsArray, ...args: SqlArg[]): Sql {
 	return new Sql(sql, placeholders);
 }
 
+export function rawSql(fragments: TemplateStringsArray, ...args: any[]) {
+	let sql = fragments[0];
+
+	for (let i = 0; i < args.length; i++) {
+		sql += args[i];
+		sql += fragments[i + 1];
+	}
+
+	return new Sql(sql, []);
+}
+
 export function joinSql(sql: Sql[], separator = ' '): Sql {
 	return new Sql(
 		sql.map(s => s.sql).join(separator),

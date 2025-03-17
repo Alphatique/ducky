@@ -83,8 +83,8 @@ export function createDucky<S extends Schema>(
 						);
 					}
 					case 'insert': {
-						return initPromise.then(({ connection }) =>
-							insert(connection, table, args[0]),
+						return initPromise.then(({ db, connection }) =>
+							insert(db, connection, table, args[0]),
 						);
 					}
 					case 'delete': {

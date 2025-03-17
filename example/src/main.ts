@@ -1,4 +1,4 @@
-import { createDucky } from '@alphatique/ducky';
+import { DuckDBDataProtocol, createDucky } from '@alphatique/ducky';
 
 import eh_worker from '@duckdb/duckdb-wasm/dist/duckdb-browser-eh.worker.js?url';
 import mvp_worker from '@duckdb/duckdb-wasm/dist/duckdb-browser-mvp.worker.js?url';
@@ -49,8 +49,13 @@ const ducky = createDucky({
 	];
 
 	await ducky.user.insert({
-		values: users,
-		returning: true,
+		type: 'json',
+		files: [
+			new File([JSON.stringify(users)], 'users.json', {
+				type: 'application/json',
+			}),
+		],
+		protocol: DuckDBDataProtocol.BROWSER_FILEREADER,
 	});
 }
 
