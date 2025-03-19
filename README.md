@@ -43,7 +43,7 @@ export const user = table('user', {
 Here's an example using Vite:
 
 ```ts
-import { DuckDBDataProtocol, createDucky } from '@alphatique/ducky';
+import { createDucky } from '@alphatique/ducky';
 
 // Import DuckDB Wasm bundles
 import eh_worker from '@duckdb/duckdb-wasm/dist/duckdb-browser-eh.worker.js?url';
