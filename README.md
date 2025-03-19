@@ -56,18 +56,18 @@ import * as schema from './schema';
 
 // Create Ducky instance
 const ducky = createDucky({
-  schema,
-  bundles: {
-    mvp: {
-      mainModule: duckdb_wasm,
-      mainWorker: mvp_worker,
-    },
-    eh: {
-      mainModule: duckdb_wasm_eh,
-      mainWorker: eh_worker,
-    },
-  },
-  logger: 'console',
+	schema,
+	bundles: {
+		mvp: {
+			mainModule: duckdb_wasm,
+			mainWorker: mvp_worker,
+		},
+		eh: {
+			mainModule: duckdb_wasm_eh,
+			mainWorker: eh_worker,
+		},
+	},
+	logger: 'console',
 });
 ```
 
@@ -81,44 +81,56 @@ type User = typeof ducky.user.$Infer;
 
 This will give you the correct type for your table's data structure, which you can use for type safety when inserting or querying data.
 
-### Inserting Data
-
-```ts
-const users: User[] = [
-  { id: 1, name: 'John', age: 20 },
-  { id: 2, name: 'Jane', age: 25 },
-];
-
-await ducky.user.insert({
-  type: 'json',
-  files: [
-    new File([JSON.stringify(users)], 'users.json', {
-      type: 'application/json',
-    }),
-  ],
-  protocol: DuckDBDataProtocol.BROWSER_FILEREADER,
-});
-```
-
-### Deleting Data
-
-```ts
-const users = await ducky.user.delete({
-  where: (t, { lte }) => lte(t.age, 22),
-  returning: true,
-});
-```
-
-### Fetching Data
+### Select
 
 ```ts
 const users = await ducky.user.select();
 ```
 
+### Insert
+
+#### JS Object
+
+```ts
+await ducky.user.insert({
+	values: [
+		{ id: 1, name: 'John', age: 20 },
+		{ id: 2, name: 'Jane', age: 25 },
+	],
+});
+```
+
+#### Parquet
+
+```ts
+await ducky.user.insert({
+	type: 'parquet',
+	files: [parquetFileBuffer],
+	protocol: DuckDBDataProtocol.BUFFER,
+});
+```
+
+#### Returning
+
+```ts
+const insertedUsers = await ducky.user.insert({
+	/* ... */
+	returning: true,
+});
+```
+
+### Delete
+
+```ts
+const users = await ducky.user.delete({
+	where: (t, { lte }) => lte(t.age, 22),
+	returning: true,
+});
+```
+
 ## Dependencies
 
-- @duckdb/duckdb-wasm: ^1.29.0
-- nanoid: ^5.1.4
+-   @duckdb/duckdb-wasm: ^1.29.0
 
 ## License
 
