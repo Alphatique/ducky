@@ -1,6 +1,6 @@
 {
 	"name": "@alphatique/ducky",
-	"version": "0.2.5",
+	"version": "0.3.0",
 	"description": "ORM for DuckDB",
 	"main": "./dist/index.mjs",
 	"module": "./dist/index.mjs",
