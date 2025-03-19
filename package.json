@@ -1,6 +1,6 @@
 {
 	"name": "@alphatique/ducky",
-	"version": "0.2.4",
+	"version": "0.2.5",
 	"description": "ORM for DuckDB",
 	"main": "./dist/index.mjs",
 	"module": "./dist/index.mjs",
@@ -28,8 +28,7 @@
 	"license": "ISC",
 	"packageManager": "pnpm@10.6.3",
 	"dependencies": {
-		"@duckdb/duckdb-wasm": "^1.29.0",
-		"nanoid": "^5.1.4"
+		"@duckdb/duckdb-wasm": "^1.29.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",

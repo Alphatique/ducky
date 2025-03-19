@@ -1,5 +1,4 @@
 import * as duckdb from '@duckdb/duckdb-wasm';
-import { nanoid } from 'nanoid';
 
 import { query } from '~/query/query';
 import { joinSql, rawSql, sql } from '~/sql';
@@ -38,7 +37,7 @@ export async function insert<T extends AnyTable>(
 
 		q = joinSql([q, sql`VALUES ${values}`]);
 	} else {
-		const id = nanoid();
+		const id = crypto.randomUUID();
 
 		await Promise.all(
 			options.files.map((file, i) => {
