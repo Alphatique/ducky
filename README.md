@@ -25,13 +25,13 @@ pnpm add @alphatique/ducky
 
 First, define your database schema using the provided schema builder:
 
-```ts:schema.ts
+```ts
 import { integer, table, text } from '@alphatique/ducky/schema';
 
 export const user = table('user', {
-  id: integer('id').primaryKey(),
-  name: text('name').notNull(),
-  age: integer('age').notNull(),
+    id: integer('id').primaryKey(),
+    name: text('name').notNull(),
+    age: integer('age').notNull(),
 });
 ```
 
@@ -56,18 +56,18 @@ import * as schema from './schema';
 
 // Create Ducky instance
 const ducky = createDucky({
-	schema,
-	bundles: {
-		mvp: {
-			mainModule: duckdb_wasm,
-			mainWorker: mvp_worker,
-		},
-		eh: {
-			mainModule: duckdb_wasm_eh,
-			mainWorker: eh_worker,
-		},
-	},
-	logger: 'console',
+    schema,
+    bundles: {
+        mvp: {
+            mainModule: duckdb_wasm,
+            mainWorker: mvp_worker,
+        },
+        eh: {
+            mainModule: duckdb_wasm_eh,
+            mainWorker: eh_worker,
+        },
+    },
+    logger: 'console',
 });
 ```
 
@@ -93,10 +93,10 @@ const users = await ducky.user.select();
 
 ```ts
 await ducky.user.insert({
-	values: [
-		{ id: 1, name: 'John', age: 20 },
-		{ id: 2, name: 'Jane', age: 25 },
-	],
+    values: [
+        { id: 1, name: 'John', age: 20 },
+        { id: 2, name: 'Jane', age: 25 },
+    ],
 });
 ```
 
@@ -104,9 +104,9 @@ await ducky.user.insert({
 
 ```ts
 await ducky.user.insert({
-	type: 'parquet',
-	files: [parquetFileBuffer],
-	protocol: DuckDBDataProtocol.BUFFER,
+    type: 'parquet',
+    files: [parquetFileBuffer],
+    protocol: DuckDBDataProtocol.BUFFER,
 });
 ```
 
@@ -114,8 +114,8 @@ await ducky.user.insert({
 
 ```ts
 const insertedUsers = await ducky.user.insert({
-	/* ... */
-	returning: true,
+    /* ... */
+    returning: true,
 });
 ```
 
@@ -123,8 +123,8 @@ const insertedUsers = await ducky.user.insert({
 
 ```ts
 const users = await ducky.user.delete({
-	where: (t, { lte }) => lte(t.age, 22),
-	returning: true,
+    where: (t, { lte }) => lte(t.age, 22),
+    returning: true,
 });
 ```
 
