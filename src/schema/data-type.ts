@@ -1,3 +1,5 @@
+import type { ArrayExactLength } from '~/utils';
+
 export type ScalarDataType =
 	| 'BIGINT'
 	| 'BOOLEAN'
@@ -11,9 +13,16 @@ export type ScalarDataType =
 	| 'UUID'
 	| 'TEXT';
 
-export type ArrayDataType<T extends ScalarDataType> = `${T}[]`;
+export type ListDataType<T extends ScalarDataType> = `${T}[]`;
+export type ArrayDataType<
+	T extends ScalarDataType,
+	L extends number,
+> = `${T}[${L}]`;
 
-export type DataType = ScalarDataType | ArrayDataType<ScalarDataType>;
+export type DataType =
+	| ScalarDataType
+	| ListDataType<ScalarDataType>
+	| ArrayDataType<ScalarDataType, number>;
 
 interface TypeMap {
 	BIGINT: bigint;
@@ -31,6 +40,8 @@ interface TypeMap {
 
 export type InferDataType<T extends DataType> = T extends ScalarDataType
 	? TypeMap[T]
-	: T extends ArrayDataType<infer E>
+	: T extends ListDataType<infer E>
 		? InferDataType<E>[]
-		: never;
+		: T extends ArrayDataType<infer E, infer L>
+			? ArrayExactLength<InferDataType<E>, L>
+			: never;

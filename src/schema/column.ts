@@ -1,4 +1,9 @@
-import type { ArrayDataType, DataType, InferDataType } from './data-type';
+import type {
+	ArrayDataType,
+	DataType,
+	InferDataType,
+	ListDataType,
+} from './data-type';
 
 export class Column<
 	T extends DataType,
@@ -49,37 +54,58 @@ export class ColumnBuilder<
 		return new ColumnBuilder(name, type, true, false, false);
 	}
 
-	public array() {
-		if (this.type.endsWith('[]')) {
+	public list() {
+		if (this.type.endsWith(']')) {
 			throw new Error('Cannot nest arrays');
 		}
 
 		const column = this as any as ColumnBuilder<
 			// @ts-expect-error
-			ArrayDataType<T>,
+			ListDataType<T>,
 			Nullable,
 			Unique,
 			PrimaryKey
 		>;
 		column.type = `${this.type}[]`;
+
+		return column;
+	}
+
+	public array<L extends number>(length: L) {
+		if (this.type.endsWith(']')) {
+			throw new Error('Cannot nest arrays');
+		}
+
+		const column = this as any as ColumnBuilder<
+			// @ts-expect-error
+			ArrayDataType<T, L>,
+			Nullable,
+			Unique,
+			PrimaryKey
+		>;
+		column.type = `${this.type}[${length}]`;
+
 		return column;
 	}
 
 	public notNull() {
 		const column = this as ColumnBuilder<T, false, Unique, PrimaryKey>;
 		column.isNullable = false;
+
 		return column;
 	}
 
 	public unique() {
 		const column = this as ColumnBuilder<T, Nullable, true, PrimaryKey>;
 		column.isUnique = true;
+
 		return column;
 	}
 
 	public primaryKey() {
 		const column = this as ColumnBuilder<T, Nullable, Unique, true>;
 		column.isPrimaryKey = true;
+
 		return column;
 	}
 }

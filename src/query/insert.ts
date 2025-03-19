@@ -25,7 +25,7 @@ export async function insert<T extends AnyTable>(
 				v =>
 					sql`(${joinSqlComma(
 						...Object.entries(table.columns).map(([key, column]) =>
-							column.type.endsWith('[]') && Array.isArray(v[key])
+							column.type.endsWith(']') && Array.isArray(v[key])
 								? sql`[${joinSqlComma(...v[key].map(e => sql`${e ?? null}`))}]`
 								: sql`${v[key] ?? null}`,
 						),

@@ -3,6 +3,7 @@ export type {
 	ArrayDataType,
 	DataType,
 	InferDataType,
+	ListDataType,
 	ScalarDataType,
 } from './data-type';
 export type { AnyTable, InferTableType, Table } from './table';

@@ -10,6 +10,6 @@ export const post = table('post', {
 	id: integer('id').primaryKey(),
 	userId: integer('user_id').notNull(),
 	title: text('title').notNull(),
-	tags: text('tags').array().notNull(),
+	tags: text('tags').list().notNull(),
 	content: text('content').notNull(),
 });
