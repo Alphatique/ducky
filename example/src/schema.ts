@@ -5,3 +5,11 @@ export const user = table('user', {
 	name: text('name').notNull(),
 	age: integer('age').notNull(),
 });
+
+export const post = table('post', {
+	id: integer('id').primaryKey(),
+	userId: integer('user_id').notNull(),
+	title: text('title').notNull(),
+	tags: text('tags').array().notNull(),
+	content: text('content').notNull(),
+});

@@ -11,7 +11,7 @@ import {
 	select,
 } from './query';
 import type { AnyTable, InferTableType, Schema } from './schema/types';
-import type { Sql } from './sql';
+import { type Sql, joinSql, joinSqlComma, rawSql } from './sql';
 import type { Unwrap } from './utils';
 
 export interface DuckyOptions<S extends Schema> {
@@ -132,21 +132,14 @@ async function applySchema(
 }
 
 function createTableQuery(table: AnyTable) {
-	return `CREATE TABLE ${table.name} (${Object.values(table.columns)
-		.map(column => {
-			let text = `${column.name} ${column.type}`;
-
-			if (!column.isNullable) {
-				text += ' NOT NULL';
-			}
-			if (column.isUnique) {
-				text += ' UNIQUE';
-			}
-			if (column.isPrimaryKey) {
-				text += ' PRIMARY KEY';
-			}
-
-			return text;
-		})
-		.join(', ')});`;
+	return rawSql`CREATE TABLE ${table.name} (${joinSqlComma(
+		...Object.values(table.columns).map(c =>
+			joinSql(
+				rawSql`${c.name} ${c.type}`,
+				!c.isNullable && rawSql`NOT NULL`,
+				c.isUnique && rawSql`UNIQUE`,
+				c.isPrimaryKey && rawSql`PRIMARY KEY`,
+			),
+		),
+	)});`;
 }

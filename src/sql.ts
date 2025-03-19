@@ -19,6 +19,10 @@ export class Sql {
 		public readonly sql: string,
 		public readonly placeholders: any[],
 	) {}
+
+	toString() {
+		return this.sql;
+	}
 }
 
 export function sql(fragments: TemplateStringsArray, ...args: SqlArg[]): Sql {
@@ -57,9 +61,20 @@ export function rawSql(fragments: TemplateStringsArray, ...args: any[]) {
 	return new Sql(sql, []);
 }
 
-export function joinSql(sql: Sql[], separator = ' '): Sql {
+export function joinSql(...sql: (Sql | false | undefined)[]): Sql {
+	const _sql = sql.filter((s): s is Sql => Boolean(s));
+
 	return new Sql(
-		sql.map(s => s.sql).join(separator),
-		sql.flatMap(s => s.placeholders),
+		_sql.map(s => s.sql).join(' '),
+		_sql.flatMap(s => s.placeholders),
+	);
+}
+
+export function joinSqlComma(...sql: (Sql | false | undefined)[]): Sql {
+	const _sql = sql.filter((s): s is Sql => Boolean(s));
+
+	return new Sql(
+		_sql.map(s => s.sql).join(', '),
+		_sql.flatMap(s => s.placeholders),
 	);
 }

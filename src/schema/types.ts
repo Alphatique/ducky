@@ -1,6 +1,11 @@
-export type { DataType, InferDataType } from './data-type';
-export type { Column, AnyColumn, IsNullable, InferColumnType } from './column';
-export type { Table, AnyTable, InferTableType } from './table';
+export type { AnyColumn, Column, InferColumnType, IsNullable } from './column';
+export type {
+	ArrayDataType,
+	DataType,
+	InferDataType,
+	ScalarDataType,
+} from './data-type';
+export type { AnyTable, InferTableType, Table } from './table';
 
 import type { AnyColumn } from './column';
 import type { Table } from './table';

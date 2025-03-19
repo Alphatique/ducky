@@ -1,4 +1,4 @@
-import type { DataType, InferDataType } from './data-type';
+import type { ArrayDataType, DataType, InferDataType } from './data-type';
 
 export class Column<
 	T extends DataType,
@@ -15,7 +15,7 @@ export class Column<
 	) {}
 }
 
-export type AnyColumn = Column<any, boolean, boolean, boolean>;
+export type AnyColumn = Column<DataType, boolean, boolean, boolean>;
 
 export type IsNullable<C extends AnyColumn> = C extends Column<
 	any,
@@ -47,6 +47,22 @@ export class ColumnBuilder<
 > extends Column<T, Nullable, Unique, PrimaryKey> {
 	static create<T extends DataType>(name: string, type: T) {
 		return new ColumnBuilder(name, type, true, false, false);
+	}
+
+	public array() {
+		if (this.type.endsWith('[]')) {
+			throw new Error('Cannot nest arrays');
+		}
+
+		const column = this as any as ColumnBuilder<
+			// @ts-expect-error
+			ArrayDataType<T>,
+			Nullable,
+			Unique,
+			PrimaryKey
+		>;
+		column.type = `${this.type}[]`;
+		return column;
 	}
 
 	public notNull() {

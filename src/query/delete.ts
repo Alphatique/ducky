@@ -19,20 +19,16 @@ export async function delete_<T extends AnyTable>(
 	table: T,
 	options: Partial<WhereClause<T>> & { returning?: boolean },
 ): Promise<Unwrap<InferTableType<T>>[] | undefined> {
-	let q = sql`DELETE FROM ${table}`;
-
-	if (options?.where) {
-		const condition = options.where(table.columns, {
-			...filters,
-			sql,
-		});
-
-		q = joinSql([q, sql`WHERE ${condition}`]);
-	}
-
-	if (options.returning) {
-		q = joinSql([q, sql`RETURNING *`]);
-	}
-
-	return await query(connection, q);
+	return await query(
+		connection,
+		joinSql(
+			sql`DELETE FROM ${table}`,
+			options.where &&
+				sql`WHERE ${options.where(table.columns, {
+					...filters,
+					sql,
+				})}`,
+			options.returning && sql`RETURNING *`,
+		),
+	);
 }

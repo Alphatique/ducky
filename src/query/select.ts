@@ -17,16 +17,15 @@ export async function select<T extends AnyTable>(
 	table: T,
 	options?: Partial<WhereClause<T>>,
 ): Promise<InferTableType<T>[]> {
-	let q = sql`SELECT * FROM ${table}`;
-
-	if (options?.where) {
-		const condition = options.where(table.columns, {
-			...filters,
-			sql,
-		});
-
-		q = joinSql([q, sql`WHERE ${condition}`]);
-	}
-
-	return await query(connection, q);
+	return await query(
+		connection,
+		joinSql(
+			sql`SELECT * FROM ${table}`,
+			options?.where &&
+				sql`WHERE ${options.where(table.columns, {
+					...filters,
+					sql,
+				})}`,
+		),
+	);
 }

@@ -1,7 +1,7 @@
 import * as duckdb from '@duckdb/duckdb-wasm';
 
 import { query } from '~/query/query';
-import { joinSql, rawSql, sql } from '~/sql';
+import { joinSql, joinSqlComma, rawSql, sql } from '~/sql';
 import type { AnyTable, InferTableType } from '~/types';
 import type { Unwrap } from '~/utils';
 
@@ -19,23 +19,27 @@ export async function insert<T extends AnyTable>(
 	table: T,
 	options: ValuesClause<T> & { returning?: boolean },
 ): Promise<Unwrap<InferTableType<T>>[] | undefined> {
-	let q = sql`INSERT INTO ${table}`;
-
 	if ('values' in options) {
-		const values = joinSql(
-			options.values.map(
+		const values = joinSqlComma(
+			...options.values.map(
 				v =>
-					sql`(${joinSql(
-						Object.keys(table.columns).map(
-							key => sql`${v[key] ?? null}`,
+					sql`(${joinSqlComma(
+						...Object.entries(table.columns).map(([key, column]) =>
+							column.type.endsWith('[]') && Array.isArray(v[key])
+								? sql`[${joinSqlComma(...v[key].map(e => sql`${e ?? null}`))}]`
+								: sql`${v[key] ?? null}`,
 						),
-						', ',
 					)})`,
 			),
-			', ',
 		);
 
-		q = joinSql([q, sql`VALUES ${values}`]);
+		return await query(
+			connection,
+			joinSql(
+				sql`INSERT INTO ${table} VALUES ${values}`,
+				options.returning && sql`RETURNING *`,
+			),
+		);
 	} else {
 		const id = crypto.randomUUID();
 
@@ -73,12 +77,13 @@ export async function insert<T extends AnyTable>(
 			}),
 		);
 
-		q = joinSql([q, rawSql`SELECT * FROM read_${options.type}('${id}-*')`]);
+		return await query(
+			connection,
+			joinSql(
+				sql`INSERT INTO ${table}`,
+				rawSql`SELECT * FROM read_${options.type}('${id}-*')`,
+				options.returning && sql`RETURNING *`,
+			),
+		);
 	}
-
-	if (options.returning) {
-		q = joinSql([q, sql`RETURNING *`]);
-	}
-
-	return await query(connection, q);
 }

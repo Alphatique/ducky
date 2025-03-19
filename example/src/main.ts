@@ -1,4 +1,4 @@
-import { DuckDBDataProtocol, createDucky } from '@alphatique/ducky';
+import { createDucky } from '@alphatique/ducky';
 
 import eh_worker from '@duckdb/duckdb-wasm/dist/duckdb-browser-eh.worker.js?url';
 import mvp_worker from '@duckdb/duckdb-wasm/dist/duckdb-browser-mvp.worker.js?url';
@@ -23,53 +23,52 @@ const ducky = createDucky({
 });
 
 {
-	type User = typeof ducky.user.$Infer;
-
-	const users: User[] = [
-		{
-			id: 1,
-			name: 'John',
-			age: 20,
-		},
-		{
-			id: 2,
-			name: 'Jane',
-			age: 25,
-		},
-		{
-			id: 3,
-			name: 'Mike',
-			age: 22,
-		},
-		{
-			id: 4,
-			name: 'Chris',
-			age: 27,
-		},
-	];
-
 	await ducky.user.insert({
-		type: 'json',
-		files: [
-			new File([JSON.stringify(users)], 'users.json', {
-				type: 'application/json',
-			}),
+		values: [
+			{
+				id: 1,
+				name: 'John',
+				age: 20,
+			},
+			{
+				id: 2,
+				name: 'Jane',
+				age: 25,
+			},
+			{
+				id: 3,
+				name: 'Mike',
+				age: 22,
+			},
+			{
+				id: 4,
+				name: 'Chris',
+				age: 27,
+			},
 		],
-		protocol: DuckDBDataProtocol.BROWSER_FILEREADER,
 	});
-}
 
-{
-	const users = await ducky.user.delete({
+	await ducky.user.delete({
 		where: (t, { lte }) => lte(t.age, 22),
-		returning: true,
 	});
 
-	console.log(users);
+	const users = await ducky.user.select();
+	console.log('users:', JSON.stringify(users, null, 2));
 }
 
 {
-	const users = await ducky.user.select();
+	await ducky.post.insert({
+		values: [
+			{
+				id: 1,
+				userId: 1,
+				title: 'Hello, world!',
+				tags: ['hello', 'world'],
+				content: 'Hello, world!',
+			},
+		],
+	});
 
-	console.log(users);
+	const posts = await ducky.post.select();
+	console.log('posts:', JSON.stringify(posts, null, 2));
 }

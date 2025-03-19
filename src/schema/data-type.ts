@@ -1,4 +1,4 @@
-export type DataType =
+export type ScalarDataType =
 	| 'BIGINT'
 	| 'BOOLEAN'
 	| 'DATE'
@@ -10,6 +10,10 @@ export type DataType =
 	| 'TIMESTAMP'
 	| 'UUID'
 	| 'TEXT';
+
+export type ArrayDataType<T extends ScalarDataType> = `${T}[]`;
+
+export type DataType = ScalarDataType | ArrayDataType<ScalarDataType>;
 
 interface TypeMap {
 	BIGINT: bigint;
@@ -25,4 +29,8 @@ interface TypeMap {
 	TEXT: string;
 }
 
-export type InferDataType<T extends DataType> = TypeMap[T];
+export type InferDataType<T extends DataType> = T extends ScalarDataType
+	? TypeMap[T]
+	: T extends ArrayDataType<infer E>
+		? InferDataType<E>[]
+		: never;
