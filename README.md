@@ -6,6 +6,10 @@
 
 An ORM library for DuckDB Wasm.
 
+- **Lightweight** (no dependencies except for `@duckdb/duckdb-wasm`)
+- **Type-safe and type inference**
+- **Protected from SQL injection**
+
 ## Installation
 
 ```sh
@@ -26,6 +30,7 @@ pnpm add @alphatique/ducky
 First, define your database schema using the provided schema builder:
 
 ```ts
+// schema.ts
 import { integer, table, text } from '@alphatique/ducky/schema';
 
 export const user = table('user', {
@@ -38,7 +43,7 @@ export const user = table('user', {
 ### Basic Setup
 
 > [!IMPORTANT]
-> The initialization process varies depending on your bundler (webpack, vite, etc.). For detailed instructions on how to initialize DuckDB Wasm with your specific bundler, please refer to the [official DuckDB Wasm documentation](https://duckdb.org/docs/stable/clients/wasm/instantiation.html).
+> The initialization process varies **depending on your bundler** (webpack, vite, etc.). For detailed instructions on how to initialize DuckDB Wasm with your specific bundler, please refer to the [official DuckDB Wasm documentation](https://duckdb.org/docs/stable/clients/wasm/instantiation.html).
 
 Here's an example using Vite:
 
@@ -127,6 +132,44 @@ const users = await ducky.user.delete({
     returning: true,
 });
 ```
+
+## Supported Data Types
+
+### Scalar Types
+
+-   `BIGINT`
+-   `BOOLEAN`
+-   `DATE`
+-   `DOUBLE`
+-   `FLOAT`
+-   `INTEGER`
+-   `JSON`
+-   `TIMESTAMPTZ`
+-   `TIMESTAMP`
+-   `UUID`
+-   `TEXT`
+
+### Nested Types
+
+-   `LIST` (variable length)
+-   `ARRAY` (fixed length)
+
+> [!WARNING]
+> Values retrieved through a `LIST` or `ARRAY` column implement an `Iterable`,
+> but are **not instances of** `Array`.
+> Therefore, code like the following will **not work as intended**:
+>
+> ```ts
+> const posts = await ducky.post.select();
+> console.log(posts[0].tags.map(tag => tag.toUpperCase()));
+> ```
+>
+> Instead, use the following:
+>
+> ```ts
+> const posts = await ducky.post.select();
+> console.log(Array.from(posts[0].tags).map(tag => tag.toUpperCase()));
+> ```
 
 ## Dependencies
 
