@@ -1,8 +1,8 @@
 import * as duckdb from '@duckdb/duckdb-wasm';
 
 import { query } from '~/query/query';
+import type { AnyTable, InferTableType } from '~/schema/types';
 import { joinSql, joinSqlComma, rawSql, sql } from '~/sql';
-import type { AnyTable, InferTableType } from '~/types';
 import type { Unwrap } from '~/utils';
 
 import type { ValuesClause } from './clause';

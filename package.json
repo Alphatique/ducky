@@ -10,10 +10,6 @@
 			"import": "./dist/index.mjs",
 			"types": "./dist/index.d.mts"
 		},
-		"./types": {
-			"import": "./dist/types.mjs",
-			"types": "./dist/types.d.mts"
-		},
 		"./schema": {
 			"import": "./dist/schema/index.mjs",
 			"types": "./dist/schema/index.d.mts"
