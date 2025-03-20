@@ -17,7 +17,8 @@
 	},
 	"scripts": {
 		"build": "tsup",
-		"typecheck": "tsc"
+		"typecheck": "tsc",
+		"publish": "pnpm run typecheck && pnpm run build && npm publish --access public"
 	},
 	"keywords": [],
 	"author": "ramenha0141",
