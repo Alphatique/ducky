@@ -1,12 +1,10 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-	entry: ['src/index.ts', 'src/schema/index.ts'],
+	entry: ['src/index.ts', 'src/schema/index.ts', 'src/types.ts'],
 	format: 'esm',
 	bundle: true,
 	external: ['@duckdb/duckdb-wasm'],
-	dts: {
-		entry: ['src/index.ts', 'src/schema/index.ts', 'src/types.ts'],
-	},
+	dts: true,
 	clean: true,
 });
