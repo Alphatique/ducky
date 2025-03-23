@@ -1,6 +1,6 @@
 {
 	"name": "@alphatique/ducky",
-	"version": "0.4.0",
+	"version": "0.4.1",
 	"description": "ORM for DuckDB",
 	"main": "./dist/index.mjs",
 	"module": "./dist/index.mjs",
@@ -13,6 +13,9 @@
 		"./schema": {
 			"import": "./dist/schema/index.mjs",
 			"types": "./dist/schema/index.d.mts"
+		},
+		"./types": {
+			"types": "./dist/types/index.d.mts"
 		}
 	},
 	"scripts": {
