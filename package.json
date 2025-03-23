@@ -1,6 +1,6 @@
 {
 	"name": "@alphatique/ducky",
-	"version": "0.4.2",
+	"version": "0.4.3",
 	"description": "ORM for DuckDB",
 	"main": "./dist/index.mjs",
 	"module": "./dist/index.mjs",
@@ -15,13 +15,12 @@
 			"types": "./dist/schema/index.d.mts"
 		},
 		"./types": {
-			"types": "./dist/types/index.d.mts"
+			"types": "./dist/types.d.mts"
 		}
 	},
 	"scripts": {
 		"build": "tsup",
-		"typecheck": "tsc",
-		"publish": "pnpm run typecheck && pnpm run build && npm publish --access public"
+		"typecheck": "tsc"
 	},
 	"keywords": [],
 	"author": "ramenha0141",
