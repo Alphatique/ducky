@@ -13,7 +13,7 @@ export type InferTableType<T extends AnyTable> = {
 	[K in keyof T['columns']]: InferColumnType<T['columns'][K]>;
 };
 
-export function table<T extends Record<string, AnyColumn>>(
+export function createTable<T extends Record<string, AnyColumn>>(
 	name: string,
 	columns: T,
 ): Table<T> {

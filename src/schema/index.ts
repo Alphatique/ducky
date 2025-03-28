@@ -13,6 +13,6 @@ export {
 	_enum,
 } from './column';
 
-export { table } from './table';
+export { createTable } from './table';
 
 export { createEnum } from './data-type/enum';
