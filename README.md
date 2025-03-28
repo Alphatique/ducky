@@ -178,14 +178,14 @@ const users = await ducky.user.delete({
 schema definition:
 
 ```ts
-import { createEnum, createTable, integer, text, _enum } from '@alphatique/ducky/schema';
+import { createEnum, createTable, integer, text } from '@alphatique/ducky/schema';
 
 export const userStatus = createEnum('user_status', ['active', 'inactive']);
 
 export const user = createTable('user', {
     id: integer('id').primaryKey(),
     name: text('name').notNull(),
-    status: _enum('status', userStatus).notNull(),
+    status: userStatus('status').notNull(),
 });
 ```
 
