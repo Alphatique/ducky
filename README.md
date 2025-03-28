@@ -31,9 +31,9 @@ First, define your database schema using the provided schema builder:
 
 ```ts
 // schema.ts
-import { integer, table, text } from '@alphatique/ducky/schema';
+import { createTable, integer, text } from '@alphatique/ducky/schema';
 
-export const user = table('user', {
+export const user = createTable('user', {
     id: integer('id').primaryKey(),
     name: text('name').notNull(),
     age: integer('age').notNull(),
@@ -170,6 +170,24 @@ const users = await ducky.user.delete({
 > const posts = await ducky.post.select();
 > console.log(Array.from(posts[0].tags).map(tag => tag.toUpperCase()));
 > ```
+
+### Enum
+
+#### Example
+
+schema definition:
+
+```ts
+import { createEnum, createTable, integer, text, _enum } from '@alphatique/ducky/schema';
+
+export const userStatus = createEnum('user_status', ['active', 'inactive']);
+
+export const user = createTable('user', {
+    id: integer('id').primaryKey(),
+    name: text('name').notNull(),
+    status: _enum('status', userStatus).notNull(),
+});
+```
 
 ## Dependencies
 
