@@ -10,6 +10,7 @@ import {
 	query,
 	select,
 } from './query';
+import { Enum } from './schema/data-type/enum';
 import { Table } from './schema/table';
 import type {
 	AnyEnum,
@@ -158,13 +159,14 @@ async function applySchema(
 	connection: duckdb.AsyncDuckDBConnection,
 	schema: Schema,
 ) {
-	const queries = Object.values(schema).map(tableOrQuery =>
-		tableOrQuery instanceof Table
-			? createTableQuery(tableOrQuery)
-			: createEnumQuery(tableOrQuery),
-	);
+	const enumQueries = Object.values(schema)
+		.filter(tableOrQuery => tableOrQuery instanceof Enum)
+		.map(e => createEnumQuery(e));
+	const tableQueries = Object.values(schema)
+		.filter(tableOrQuery => tableOrQuery instanceof Table)
+		.map(t => createTableQuery(t));
 
-	await connection.query(queries.join('\n'));
+	await connection.query(enumQueries.concat(tableQueries).join('\n'));
 }
 
 function createTableQuery(table: AnyTable) {
