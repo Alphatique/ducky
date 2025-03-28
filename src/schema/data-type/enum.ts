@@ -1,9 +1,10 @@
-export class Enum<T extends string> {
-	constructor(
-		public readonly name: string,
-		public readonly values: T[],
-	) {}
-}
+import { dataType } from '.';
+import { ColumnBuilder } from '../column';
+
+export type Enum<T extends string> = {
+	readonly _name: string;
+	readonly _values: T[];
+} & ((name: string) => ColumnBuilder<T, true, false, false>);
 
 export type AnyEnum = Enum<string>;
 
@@ -11,6 +12,15 @@ export type InferEnumType<E extends AnyEnum> = E extends Enum<infer T>
 	? T
 	: never;
 
-export function createEnum<T extends string>(name: string, values: T[]) {
-	return new Enum(name, values);
+export function createEnum<T extends string>(
+	name: string,
+	values: T[],
+): Enum<T> {
+	return Object.assign(
+		(_name: string) => ColumnBuilder.create(_name, dataType<T>(name)),
+		{
+			_name: name,
+			_values: values,
+		},
+	);
 }

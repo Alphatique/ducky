@@ -10,7 +10,6 @@ import {
 	query,
 	select,
 } from './query';
-import { Enum } from './schema/data-type/enum';
 import { Table } from './schema/table';
 import type {
 	AnyEnum,
@@ -160,7 +159,7 @@ async function applySchema(
 	schema: Schema,
 ) {
 	const enumQueries = Object.values(schema)
-		.filter(tableOrQuery => tableOrQuery instanceof Enum)
+		.filter(tableOrQuery => typeof tableOrQuery === 'function')
 		.map(e => createEnumQuery(e));
 	const tableQueries = Object.values(schema)
 		.filter(tableOrQuery => tableOrQuery instanceof Table)
@@ -183,5 +182,5 @@ function createTableQuery(table: AnyTable) {
 }
 
 function createEnumQuery(_enum: AnyEnum) {
-	return rawSql`CREATE TYPE ${_enum.name} AS ENUM (${_enum.values.map(v => `'${v}'`).join(', ')});`;
+	return rawSql`CREATE TYPE ${_enum._name} AS ENUM (${_enum._values.map(v => `'${v}'`).join(', ')});`;
 }

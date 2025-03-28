@@ -1,17 +1,16 @@
 import {
-	_enum,
 	createEnum,
 	createTable,
 	integer,
 	text,
 } from '@alphatique/ducky/schema';
 
-export const UserStatus = createEnum('user_status', ['active', 'inactive']);
+export const userStatus = createEnum('user_status', ['active', 'inactive']);
 
 export const user = createTable('user', {
 	id: integer('id').primaryKey(),
 	name: text('name').notNull(),
-	status: _enum('status', UserStatus).notNull(),
+	status: userStatus('status').notNull(),
 });
 
 export const post = createTable('post', {

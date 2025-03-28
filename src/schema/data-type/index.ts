@@ -10,7 +10,7 @@ export interface DataType<T> {
 	readonly toString: () => string;
 }
 
-function dataType<T>(name: string) {
+export function dataType<T>(name: string) {
 	return {
 		toString: () => name,
 	} as DataType<T>;

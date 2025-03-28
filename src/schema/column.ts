@@ -1,6 +1,5 @@
 import type { DataType } from './data-type';
 import * as dataTypes from './data-type';
-import type { Enum } from './data-type/enum';
 
 export class Column<
 	T,
@@ -142,8 +141,4 @@ export function uuid(name: string) {
 }
 export function text(name: string) {
 	return ColumnBuilder.create(name, dataTypes.text);
-}
-
-export function _enum<T extends string>(name: string, _enum: Enum<T>) {
-	return ColumnBuilder.create(name, dataTypes._enum(_enum));
 }
