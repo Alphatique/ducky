@@ -1,12 +1,12 @@
-import { type SqlArg, sql } from '~/sql';
+import { sql } from '~/sql';
 
-export const eq = (left: SqlArg, right: SqlArg) => sql`${left} = ${right}`;
-export const ne = (left: SqlArg, right: SqlArg) => sql`${left} != ${right}`;
-export const gt = (left: SqlArg, right: SqlArg) => sql`${left} > ${right}`;
-export const gte = (left: SqlArg, right: SqlArg) => sql`${left} >= ${right}`;
-export const lt = (left: SqlArg, right: SqlArg) => sql`${left} < ${right}`;
-export const lte = (left: SqlArg, right: SqlArg) => sql`${left} <= ${right}`;
+export const eq = (left: any, right: any) => sql`${left} = ${right}`;
+export const ne = (left: any, right: any) => sql`${left} != ${right}`;
+export const gt = (left: any, right: any) => sql`${left} > ${right}`;
+export const gte = (left: any, right: any) => sql`${left} >= ${right}`;
+export const lt = (left: any, right: any) => sql`${left} < ${right}`;
+export const lte = (left: any, right: any) => sql`${left} <= ${right}`;
 
-export const and = (left: SqlArg, right: SqlArg) => sql`${left} AND ${right}`;
-export const or = (left: SqlArg, right: SqlArg) => sql`${left} OR ${right}`;
-export const not = (filter: SqlArg) => sql`NOT (${filter})`;
+export const and = (left: any, right: any) => sql`${left} AND ${right}`;
+export const or = (left: any, right: any) => sql`${left} OR ${right}`;
+export const not = (filter: any) => sql`NOT (${filter})`;

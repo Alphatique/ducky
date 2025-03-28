@@ -10,7 +10,14 @@ import {
 	query,
 	select,
 } from './query';
-import type { AnyTable, InferTableType, Schema } from './schema/types';
+import { Table } from './schema/table';
+import type {
+	AnyEnum,
+	AnyTable,
+	InferEnumType,
+	InferTableType,
+	Schema,
+} from './schema/types';
 import { type Sql, joinSql, joinSqlComma, rawSql } from './sql';
 import type { Unwrap } from './utils';
 
@@ -25,13 +32,20 @@ export type Ducky<S extends Schema> = {
 	readonly $connection: Promise<duckdb.AsyncDuckDBConnection>;
 	readonly $query: (sql: Sql) => Promise<any[]>;
 } & {
-	[K in keyof S]: Readonly<{
-		$Infer: Unwrap<InferTableType<S[K]>>;
-		$schema: S[K];
-		select: SelectQuery<S[K]>;
-		insert: InsertQuery<S[K]>;
-		delete: DeleteQuery<S[K]>;
-	}>;
+	[K in keyof S]: S[K] extends AnyTable
+		? Readonly<{
+				$Infer: Unwrap<InferTableType<S[K]>>;
+				$schema: S[K];
+				select: SelectQuery<S[K]>;
+				insert: InsertQuery<S[K]>;
+				delete: DeleteQuery<S[K]>;
+			}>
+		: S[K] extends AnyEnum
+			? Readonly<{
+					$Infer: InferEnumType<S[K]>;
+					$schema: S[K];
+				}>
+			: never;
 };
 
 export function createDucky<S extends Schema>(
@@ -63,37 +77,55 @@ export function createDucky<S extends Schema>(
 				}
 			}
 			case 2: {
-				const [_table, method] = path;
+				const [tableKey, method] = path;
 
-				const table = options.schema[_table];
-				if (!table) {
-					throw new Error(`Table ${_table} not found`);
+				const tableOrEnum = options.schema[tableKey];
+				if (!tableOrEnum) {
+					throw new Error(`Table or enum ${tableKey} not found`);
 				}
 
-				switch (method) {
-					case '$Infer': {
-						throw new Error('$Infer is not callable');
+				if (tableOrEnum instanceof Table) {
+					const table = tableOrEnum;
+
+					switch (method) {
+						case '$Infer': {
+							throw new Error('$Infer is not callable');
+						}
+						case '$schema': {
+							return table;
+						}
+						case 'select': {
+							return initPromise.then(({ connection }) =>
+								select(connection, table, args[0]),
+							);
+						}
+						case 'insert': {
+							return initPromise.then(({ db, connection }) =>
+								insert(db, connection, table, args[0]),
+							);
+						}
+						case 'delete': {
+							return initPromise.then(({ connection }) =>
+								delete_(connection, table, args[0]),
+							);
+						}
+						default: {
+							throw new Error(`Method ${method} not found`);
+						}
 					}
-					case '$schema': {
-						return table;
-					}
-					case 'select': {
-						return initPromise.then(({ connection }) =>
-							select(connection, table, args[0]),
-						);
-					}
-					case 'insert': {
-						return initPromise.then(({ db, connection }) =>
-							insert(db, connection, table, args[0]),
-						);
-					}
-					case 'delete': {
-						return initPromise.then(({ connection }) =>
-							delete_(connection, table, args[0]),
-						);
-					}
-					default: {
-						throw new Error(`Method ${method} not found`);
+				} else {
+					const _enum = tableOrEnum;
+
+					switch (method) {
+						case '$Infer': {
+							throw new Error('$Infer is not callable');
+						}
+						case '$schema': {
+							return _enum;
+						}
+						default: {
+							throw new Error(`Method ${method} not found`);
+						}
 					}
 				}
 			}
@@ -126,7 +158,11 @@ async function applySchema(
 	connection: duckdb.AsyncDuckDBConnection,
 	schema: Schema,
 ) {
-	const queries = Object.values(schema).map(table => createTableQuery(table));
+	const queries = Object.values(schema).map(tableOrQuery =>
+		tableOrQuery instanceof Table
+			? createTableQuery(tableOrQuery)
+			: createEnumQuery(tableOrQuery),
+	);
 
 	await connection.query(queries.join('\n'));
 }
@@ -142,4 +178,8 @@ function createTableQuery(table: AnyTable) {
 			),
 		),
 	)});`;
+}
+
+function createEnumQuery(_enum: AnyEnum) {
+	return rawSql`CREATE TYPE ${_enum.name} AS ENUM (${_enum.values.map(v => `'${v}'`).join(', ')});`;
 }

@@ -6,5 +6,4 @@ export {
 	rawSql,
 	sql,
 	type Sql,
-	type SqlArg,
 } from './sql';

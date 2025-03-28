@@ -1,18 +1,5 @@
 import { Column } from './schema/column';
 import { Table } from './schema/table';
-import type {
-	AnyColumn,
-	AnyTable,
-	DataType,
-	InferDataType,
-} from './schema/types';
-
-export type SqlArg =
-	| Sql
-	| AnyTable
-	| AnyColumn
-	| InferDataType<DataType>
-	| null;
 
 export class Sql {
 	constructor(
@@ -25,7 +12,7 @@ export class Sql {
 	}
 }
 
-export function sql(fragments: TemplateStringsArray, ...args: SqlArg[]): Sql {
+export function sql(fragments: TemplateStringsArray, ...args: any[]): Sql {
 	let sql = fragments[0];
 	const placeholders = [];
 

@@ -10,6 +10,9 @@ export {
 	timestamp,
 	timestamptz,
 	uuid,
+	_enum,
 } from './column';
 
 export { table } from './table';
+
+export { createEnum } from './data-type/enum';

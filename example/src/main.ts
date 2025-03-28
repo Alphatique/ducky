@@ -28,28 +28,28 @@ const ducky = createDucky({
 			{
 				id: 1,
 				name: 'John',
-				age: 20,
+				status: 'active',
 			},
 			{
 				id: 2,
 				name: 'Jane',
-				age: 25,
+				status: 'inactive',
 			},
 			{
 				id: 3,
 				name: 'Mike',
-				age: 22,
+				status: 'active',
 			},
 			{
 				id: 4,
 				name: 'Chris',
-				age: 27,
+				status: 'inactive',
 			},
 		],
 	});
 
 	await ducky.user.delete({
-		where: (t, { lte }) => lte(t.age, 22),
+		where: (t, { eq }) => eq(t.status, 'inactive'),
 	});
 
 	const users = await ducky.user.select();
