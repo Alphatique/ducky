@@ -23,7 +23,7 @@ import type { Unwrap } from './utils';
 
 export interface DuckyOptions<S extends Schema> {
 	schema: S;
-	bundles: duckdb.DuckDBBundles | Promise<duckdb.DuckDBBundles>;
+	bundles: duckdb.DuckDBBundles;
 	logger?: 'console' | duckdb.Logger;
 }
 
@@ -137,7 +137,7 @@ export function createDucky<S extends Schema>(
 }
 
 async function initDuckDB(options: DuckyOptions<any>) {
-	const bundle = await duckdb.selectBundle(await options.bundles);
+	const bundle = await duckdb.selectBundle(options.bundles);
 	const worker = new Worker(bundle.mainWorker!);
 	const logger =
 		options.logger === 'console'
