@@ -21,3 +21,7 @@ export type ValuesClause<T extends AnyTable> =
 			files: any[];
 			protocol: duckdb.DuckDBDataProtocol;
 	  };
+
+export type OnConflictClause<T extends AnyTable> = {
+	onConflict: 'ignore' | 'replace';
+};

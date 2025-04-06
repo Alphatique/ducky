@@ -48,6 +48,17 @@ const ducky = createDucky({
 		],
 	});
 
+	await ducky.user.insert({
+		onConflict: 'replace',
+		values: [
+			{
+				id: 1,
+				name: 'John Philips',
+				status: 'active',
+			},
+		],
+	});
+
 	await ducky.user.delete({
 		where: (t, { eq }) => eq(t.status, 'inactive'),
 	});

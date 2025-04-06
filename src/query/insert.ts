@@ -5,19 +5,21 @@ import type { AnyTable, InferTableType } from '~/schema/types';
 import { joinSql, joinSqlComma, rawSql, sql } from '~/sql';
 import type { Unwrap } from '~/utils';
 
-import type { ValuesClause } from './clause';
+import type { OnConflictClause, ValuesClause } from './clause';
 
 export type InsertQuery<T extends AnyTable> = <
 	Returning extends boolean = false,
 >(
-	options: ValuesClause<T> & { returning?: Returning },
+	options: ValuesClause<T> &
+		Partial<OnConflictClause<T>> & { returning?: Returning },
 ) => Promise<Returning extends true ? Unwrap<InferTableType<T>>[] : void>;
 
 export async function insert<T extends AnyTable>(
 	db: duckdb.AsyncDuckDB,
 	connection: duckdb.AsyncDuckDBConnection,
 	table: T,
-	options: ValuesClause<T> & { returning?: boolean },
+	options: ValuesClause<T> &
+		Partial<OnConflictClause<T>> & { returning?: boolean },
 ): Promise<Unwrap<InferTableType<T>>[] | undefined> {
 	if ('values' in options) {
 		const values = joinSqlComma(
@@ -37,7 +39,11 @@ export async function insert<T extends AnyTable>(
 		return await query(
 			connection,
 			joinSql(
-				sql`INSERT INTO ${table} VALUES ${values}`,
+				sql`INSERT`,
+				options.onConflict === 'ignore' && sql`OR IGNORE`,
+				options.onConflict === 'replace' && sql`OR REPLACE`,
+				sql`INTO ${table}`,
+				sql`VALUES ${values}`,
 				options.returning && sql`RETURNING *`,
 			),
 		);
@@ -81,7 +87,10 @@ export async function insert<T extends AnyTable>(
 		return await query(
 			connection,
 			joinSql(
-				sql`INSERT INTO ${table}`,
+				sql`INSERT`,
+				options.onConflict === 'ignore' && sql`OR IGNORE`,
+				options.onConflict === 'replace' && sql`OR REPLACE`,
+				sql`INTO ${table}`,
 				rawSql`SELECT * FROM read_${options.type}('${id}-*')`,
 				options.returning && sql`RETURNING *`,
 			),
