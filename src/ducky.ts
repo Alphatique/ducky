@@ -18,7 +18,7 @@ import type {
 	InferTableType,
 	Schema,
 } from './schema/types';
-import { type Sql, joinSql, joinSqlComma, rawSql } from './sql';
+import { type Sql, joinSql, joinSqlComma, rawSql, sql } from './sql';
 import type { Unwrap } from './utils';
 
 export interface DuckyOptions<S extends Schema> {
@@ -177,6 +177,10 @@ function createTableQuery(table: AnyTable) {
 				c.isUnique && rawSql`UNIQUE`,
 				c.isPrimaryKey && rawSql`PRIMARY KEY`,
 			),
+		),
+		...table.constraints.map(
+			c =>
+				rawSql`${c.type} (${joinSqlComma(...c.columns.map(c => sql`${c}`))})`,
 		),
 	)});`;
 }
