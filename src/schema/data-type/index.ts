@@ -32,8 +32,8 @@ export const double = dataType<number>('DOUBLE', 'DOUBLE');
 export const float = dataType<number>('FLOAT', 'FLOAT');
 export const integer = dataType<number>('INTEGER', 'INT32');
 export const json = dataType<JSONValue>('JSON', 'JSON');
-export const timestamptz = dataType<Date>('TIMESTAMPTZ', 'TIMESTAMP');
-export const timestamp = dataType<Date>('TIMESTAMP', 'TIMESTAMP');
+export const timestamptz = dataType<Date>('TIMESTAMPTZ', 'TIMESTAMP_MILLIS');
+export const timestamp = dataType<Date>('TIMESTAMP', 'TIMESTAMP_MILLIS');
 export const uuid = dataType<string>('UUID', 'UUID');
 export const text = dataType<string>('TEXT', 'UTF8');
 
