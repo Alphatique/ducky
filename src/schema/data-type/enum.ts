@@ -17,7 +17,8 @@ export function createEnum<T extends string>(
 	values: T[],
 ): Enum<T> {
 	return Object.assign(
-		(_name: string) => ColumnBuilder.create(_name, dataType<T>(name)),
+		(_name: string) =>
+			ColumnBuilder.create(_name, dataType<T>(name, 'UTF8')),
 		{
 			_name: name,
 			_values: values,

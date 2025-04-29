@@ -10,6 +10,10 @@
 			"import": "./dist/index.mjs",
 			"types": "./dist/index.d.mts"
 		},
+		"./parquet": {
+			"import": "./dist/parquet.mjs",
+			"types": "./dist/parquet.d.mts"
+		},
 		"./schema": {
 			"import": "./dist/schema/index.mjs",
 			"types": "./dist/schema/index.d.mts"
