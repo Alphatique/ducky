@@ -20,6 +20,7 @@ export type ValuesClause<T extends AnyTable> =
 			type: 'csv' | 'json' | 'parquet';
 			files: any[];
 			protocol: duckdb.DuckDBDataProtocol;
+			distinct?: boolean;
 	  };
 
 export type OnConflictClause<T extends AnyTable> = {

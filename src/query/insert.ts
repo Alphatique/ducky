@@ -91,7 +91,9 @@ export async function insert<T extends AnyTable>(
 				options.onConflict === 'ignore' && sql`OR IGNORE`,
 				options.onConflict === 'replace' && sql`OR REPLACE`,
 				sql`INTO ${table}`,
-				rawSql`SELECT * FROM read_${options.type}('${id}-*')`,
+				sql`SELECT`,
+				options.distinct && sql`DISTINCT`,
+				rawSql`* FROM read_${options.type}('${id}-*')`,
 				options.returning && sql`RETURNING *`,
 			),
 		);
