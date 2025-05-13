@@ -23,7 +23,7 @@ import type { Unwrap } from './utils';
 
 export interface DuckyOptions<S extends Schema> {
 	schema: S;
-	bundles: duckdb.DuckDBBundles;
+	bundles?: duckdb.DuckDBBundles;
 	logger?: 'console' | duckdb.Logger;
 }
 
@@ -137,8 +137,20 @@ export function createDucky<S extends Schema>(
 }
 
 async function initDuckDB(options: DuckyOptions<any>) {
-	const bundle = await duckdb.selectBundle(options.bundles);
-	const worker = new Worker(bundle.mainWorker!);
+	const bundle = await duckdb.selectBundle(
+		options.bundles ?? duckdb.getJsDelivrBundles(),
+	);
+	let workerUrl: string | undefined;
+	const worker = new Worker(
+		options.bundles
+			? bundle.mainWorker!
+			: // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
+				(workerUrl = URL.createObjectURL(
+					new Blob([`importScripts("${bundle.mainWorker}");`], {
+						type: 'text/javascript',
+					}),
+				)),
+	);
 	const logger =
 		options.logger === 'console'
 			? new duckdb.ConsoleLogger()
@@ -146,6 +158,8 @@ async function initDuckDB(options: DuckyOptions<any>) {
 
 	const db = new duckdb.AsyncDuckDB(logger, worker);
 	await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
+
+	workerUrl && URL.revokeObjectURL(workerUrl);
 
 	const connection = await db.connect();
 
