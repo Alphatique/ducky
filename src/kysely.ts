@@ -1,4 +1,4 @@
-import type { DataType, Schema, Table } from './schema';
+import type { Column, Schema, Table } from './schema';
 import type { Pretty, UnionToIntersection } from './utils';
 
 export type KyselySchema<S extends Schema> = Pretty<
@@ -16,11 +16,18 @@ export type KyselySchema<S extends Schema> = Pretty<
 export type KyselyTable<T extends Table> = Pretty<
 	UnionToIntersection<
 		{
-			[K in keyof T['columns']]: T['columns'][K]['type'] extends DataType<
-				infer DT
+			[K in keyof T['columns']]: T['columns'][K] extends Column<
+				infer _,
+				infer DT,
+				infer NotNull,
+				infer PrimaryKey
 			>
 				? {
-						[N in T['columns'][K]['name']]: DT;
+						[N in T['columns'][K]['name']]: NotNull extends true
+							? DT
+							: PrimaryKey extends true
+								? DT
+								: DT | null;
 					}
 				: never;
 		}[keyof T['columns']]
