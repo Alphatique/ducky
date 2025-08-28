@@ -1,18 +1,18 @@
-import type { AnyColumn } from './column';
+import type { Column } from './column';
 
 export interface Constraint {
 	type: 'PRIMARY KEY' | 'UNIQUE';
-	columns: AnyColumn[];
+	columns: Column[];
 }
 
-export function primaryKey(columns: AnyColumn[]): Constraint {
+export function primaryKey(columns: Column[]): Constraint {
 	return {
 		type: 'PRIMARY KEY',
 		columns,
 	};
 }
 
-export function unique(columns: AnyColumn[]): Constraint {
+export function unique(columns: Column[]): Constraint {
 	return {
 		type: 'UNIQUE',
 		columns,

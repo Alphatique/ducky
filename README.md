@@ -6,7 +6,6 @@
 
 An ORM library for DuckDB Wasm.
 
-- **Lightweight** (no dependencies except for `@duckdb/duckdb-wasm`)
 - **Type-safe and type inference**
 - **Protected from SQL injection**
 
@@ -31,12 +30,19 @@ First, define your database schema using the provided schema builder:
 
 ```ts
 // schema.ts
-import { createTable, integer, text } from '@alphatique/ducky/schema';
+import {
+	createEnum,
+	createTable,
+	integer,
+	text,
+} from '@alphatique/ducky/schema';
+
+export const userStatus = createEnum('user_status', ['active', 'inactive']);
 
 export const user = createTable('user', {
-    id: integer('id').primaryKey(),
-    name: text('name').notNull(),
-    age: integer('age').notNull(),
+	id: integer('id').primaryKey(),
+	name: text('name').notNull(),
+	status: userStatus('status').notNull(),
 });
 ```
 
@@ -81,7 +87,7 @@ const ducky = createDucky({
 You can infer types from your schema using the `$Infer` property:
 
 ```ts
-type User = typeof ducky.user.$Infer;
+type User = typeof ducky.$inferSelectable.user;
 ```
 
 This will give you the correct type for your table's data structure, which you can use for type safety when inserting or querying data.
@@ -89,7 +95,7 @@ This will give you the correct type for your table's data structure, which you c
 ### Select
 
 ```ts
-const users = await ducky.user.select();
+const users = await ducky.selectFrom('user').selectAll().execute();
 ```
 
 ### Insert
@@ -97,40 +103,33 @@ const users = await ducky.user.select();
 #### JS Object
 
 ```ts
-await ducky.user.insert({
-    values: [
-        { id: 1, name: 'John', age: 20 },
-        { id: 2, name: 'Jane', age: 25 },
-    ],
-});
+await ducky
+    .insertInto('user')
+    .values([
+        {
+            id: 1,
+            name: 'John',
+            status: 'active',
+        },
+        {
+            id: 2,
+            name: 'Jane',
+            status: 'inactive',
+        },
+    ])
+    .execute();
 ```
 
 #### Parquet
 
 ```ts
-await ducky.user.insert({
-    type: 'parquet',
-    files: [parquetFileBuffer],
-    protocol: DuckDBDataProtocol.BUFFER,
-});
-```
-
-#### Returning
-
-```ts
-const insertedUsers = await ducky.user.insert({
-    /* ... */
-    returning: true,
-});
+await ducky.insertBlob('user', 'parquet', [parquetFile]);
 ```
 
 ### Delete
 
 ```ts
-const users = await ducky.user.delete({
-    where: (t, { lte }) => lte(t.age, 22),
-    returning: true,
-});
+await ducky.deleteFrom('user').where('status', '=', 'inactive').execute();
 ```
 
 ## Supported Data Types
@@ -153,45 +152,6 @@ const users = await ducky.user.delete({
 
 -   `LIST` (variable length)
 -   `ARRAY` (fixed length)
-
-> [!WARNING]
-> Values retrieved through a `LIST` or `ARRAY` column implement an `Iterable`,
-> but are **not instances of** `Array`.
-> Therefore, code like the following will **not work as intended**:
->
-> ```ts
-> const posts = await ducky.post.select();
-> console.log(posts[0].tags.map(tag => tag.toUpperCase()));
-> ```
->
-> Instead, use the following:
->
-> ```ts
-> const posts = await ducky.post.select();
-> console.log(Array.from(posts[0].tags).map(tag => tag.toUpperCase()));
-> ```
-
-### Enum
-
-#### Example
-
-schema definition:
-
-```ts
-import { createEnum, createTable, integer, text } from '@alphatique/ducky/schema';
-
-export const userStatus = createEnum('user_status', ['active', 'inactive']);
-
-export const user = createTable('user', {
-    id: integer('id').primaryKey(),
-    name: text('name').notNull(),
-    status: userStatus('status').notNull(),
-});
-```
-
-## Dependencies
-
--   @duckdb/duckdb-wasm: ^1.29.0
 
 ## License
 

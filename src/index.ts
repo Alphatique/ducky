@@ -1,9 +1,3 @@
-export { DuckDBDataProtocol } from '@duckdb/duckdb-wasm';
-export { createDucky, type Ducky } from './ducky';
-export {
-	joinSql,
-	joinSqlComma,
-	rawSql,
-	sql,
-	type Sql,
-} from './sql';
+export { type DuckyOptions, type Ducky, createDucky } from './ducky';
+
+export { datatypes } from '@coji/kysely-duckdb-wasm';

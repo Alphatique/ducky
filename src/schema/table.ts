@@ -1,34 +1,33 @@
-import type { AnyColumn, InferColumnType } from './column';
+import type { Column } from './column';
 import { type Constraint, primaryKey, unique } from './constraint';
 
-export class Table<T extends Record<string, AnyColumn>> {
+export class Table<
+	N extends string = string,
+	T extends Record<string, Column> = Record<string, Column>,
+> {
 	constructor(
-		public name: string,
-		public columns: T,
-		public constraints: Constraint[] = [],
+		readonly name: N,
+		readonly columns: T,
+		readonly constraints: Constraint[],
 	) {}
 }
-
-export type AnyTable = Table<Record<string, AnyColumn>>;
-
-export type InferTableType<T extends AnyTable> = {
-	[K in keyof T['columns']]: InferColumnType<T['columns'][K]>;
-};
 
 const _constraints = {
 	primaryKey,
 	unique,
 };
 
-type ConstraintFn<T extends AnyTable> = (
-	table: T['columns'],
-	constraints: typeof _constraints,
-) => Constraint[];
-
-export function createTable<T extends Record<string, AnyColumn>>(
-	name: string,
+export function createTable<N extends string, T extends Record<string, Column>>(
+	name: N,
 	columns: T,
-	constraintFn?: ConstraintFn<Table<T>>,
-): Table<T> {
-	return new Table(name, columns, constraintFn?.(columns, _constraints));
+	constraintsFn?: (
+		columns: T,
+		constraints: typeof _constraints,
+	) => Constraint[],
+) {
+	return new Table(
+		name,
+		columns,
+		constraintsFn?.(columns, _constraints) ?? [],
+	);
 }

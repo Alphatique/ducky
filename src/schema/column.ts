@@ -1,80 +1,50 @@
-import type { DataType } from './data-type';
-import * as dataTypes from './data-type';
+import { type DataType, type JSONValue, array, list } from './data-types';
+import * as dataTypes from './data-types';
 
 export class Column<
-	T,
-	Nullable extends boolean,
-	Unique extends boolean,
-	PrimaryKey extends boolean,
+	N extends string = string,
+	T = unknown,
+	NotNull extends boolean = boolean,
+	PrimaryKey extends boolean = boolean,
+	Unique extends boolean = boolean,
 > {
 	constructor(
-		public name: string,
-		public type: DataType<T>,
-		public isNullable: Nullable,
-		public isUnique: Unique,
-		public isPrimaryKey: PrimaryKey,
+		readonly name: N,
+		readonly type: DataType<T>,
+		readonly isNotNull: NotNull,
+		readonly isPrimaryKey: PrimaryKey,
+		readonly isUnique: Unique,
 	) {}
 }
 
-export type AnyColumn = Column<any, boolean, boolean, boolean>;
-
-export type IsNullable<C extends AnyColumn> = C extends Column<
-	any,
-	infer N extends boolean,
-	boolean,
-	infer P extends boolean
->
-	? P extends true
-		? false
-		: N
-	: never;
-
-export type InferColumnType<C extends AnyColumn> = C extends Column<
-	infer T,
-	boolean,
-	boolean,
-	boolean
->
-	? IsNullable<C> extends true
-		? T | null
-		: T
-	: never;
-
 export class ColumnBuilder<
+	N extends string,
 	T,
-	Nullable extends boolean,
-	Unique extends boolean,
+	NotNull extends boolean,
 	PrimaryKey extends boolean,
-> extends Column<T, Nullable, Unique, PrimaryKey> {
-	static create<T>(name: string, type: DataType<T>) {
-		return new ColumnBuilder(name, type, true, false, false);
+	Unique extends boolean,
+> extends Column<N, T, NotNull, PrimaryKey, Unique> {
+	static create<N extends string, T>(name: N, type: DataType<T>) {
+		return new ColumnBuilder(name, type, false, false, false);
 	}
 
 	public list() {
-		if (this.type.toString().endsWith(']')) {
-			throw new Error('Cannot nest arrays');
-		}
-
 		return new ColumnBuilder(
 			this.name,
-			dataTypes.list(this.type),
-			this.isNullable,
-			this.isUnique,
+			list(this.type),
+			this.isNotNull,
 			this.isPrimaryKey,
+			this.isUnique,
 		);
 	}
 
 	public array<L extends number>(length: L) {
-		if (this.type.toString().endsWith(']')) {
-			throw new Error('Cannot nest arrays');
-		}
-
 		return new ColumnBuilder(
 			this.name,
-			dataTypes.array(this.type, length),
-			this.isNullable,
-			this.isUnique,
+			array<T, L>(this.type, length),
+			this.isNotNull,
 			this.isPrimaryKey,
+			this.isUnique,
 		);
 	}
 
@@ -82,19 +52,9 @@ export class ColumnBuilder<
 		return new ColumnBuilder(
 			this.name,
 			this.type,
-			false,
-			this.isUnique,
-			this.isPrimaryKey,
-		);
-	}
-
-	public unique() {
-		return new ColumnBuilder(
-			this.name,
-			this.type,
-			this.isNullable,
 			true,
 			this.isPrimaryKey,
+			this.isUnique,
 		);
 	}
 
@@ -102,43 +62,53 @@ export class ColumnBuilder<
 		return new ColumnBuilder(
 			this.name,
 			this.type,
-			this.isNullable,
+			this.isNotNull,
+			true,
 			this.isUnique,
+		);
+	}
+
+	public unique() {
+		return new ColumnBuilder(
+			this.name,
+			this.type,
+			this.isNotNull,
+			this.isPrimaryKey,
 			true,
 		);
 	}
 }
 
-export function bigint(name: string) {
+export function bigint<N extends string>(name: N) {
 	return ColumnBuilder.create(name, dataTypes.bigint);
 }
-export function boolean(name: string) {
+export function boolean<N extends string>(name: N) {
 	return ColumnBuilder.create(name, dataTypes.boolean);
 }
-export function date(name: string) {
+export function date<N extends string>(name: N) {
 	return ColumnBuilder.create(name, dataTypes.date);
 }
-export function double(name: string) {
+export function double<N extends string>(name: N) {
 	return ColumnBuilder.create(name, dataTypes.double);
 }
-export function float(name: string) {
+export function float<N extends string>(name: N) {
 	return ColumnBuilder.create(name, dataTypes.float);
 }
-export function integer(name: string) {
+export function integer<N extends string>(name: N) {
 	return ColumnBuilder.create(name, dataTypes.integer);
 }
-export function json(name: string) {
-	return ColumnBuilder.create(name, dataTypes.json);
+export function json<T extends JSONValue, N extends string>(name: N) {
+	return ColumnBuilder.create(name, dataTypes.json<T>());
 }
-export function timestamptz(name: string) {
+export function timestamptz<N extends string>(name: N) {
 	return ColumnBuilder.create(name, dataTypes.timestamptz);
 }
-export function timestamp(name: string) {
+export function timestamp<N extends string>(name: N) {
 	return ColumnBuilder.create(name, dataTypes.timestamp);
 }
-export function uuid(name: string) {
+export function uuid<N extends string>(name: N) {
 	return ColumnBuilder.create(name, dataTypes.uuid);
 }
-export function text(name: string) {
+export function text<N extends string>(name: N) {
 	return ColumnBuilder.create(name, dataTypes.text);
 }

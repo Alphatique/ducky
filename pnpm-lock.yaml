@@ -8,9 +8,15 @@ importers:
 
   .:
     dependencies:
+      '@coji/kysely-duckdb-wasm':
+        specifier: ^0.1.6
+        version: 0.1.6(@duckdb/duckdb-wasm@1.29.0)(apache-arrow@17.0.0)(kysely@0.28.5)
       '@duckdb/duckdb-wasm':
         specifier: 1.29.0
         version: 1.29.0
+      kysely:
+        specifier: ^0.28.5
+        version: 0.28.5
     devDependencies:
       '@biomejs/biome':
         specifier: ^1.9.4
@@ -76,6 +82,13 @@ packages:
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]
+
+  '@coji/kysely-duckdb-wasm@0.1.6':
+    resolution: {integrity: sha512-6Ag1BAYdAlWIYkcubKyN1PnQw7fNAf6o12O3RISait720wmQ+fGqHQ70CgyvICtLD+iYngCnb7THf5I9s5Aysg==}
+    peerDependencies:
+      '@duckdb/duckdb-wasm': '*'
+      apache-arrow: '*'
+      kysely: ^0.28
 
   '@duckdb/duckdb-wasm@1.29.0':
     resolution: {integrity: sha512-8Zq7vafQuIz9gklC/9375KE38UlkaS2n8+yvG+/JK7irm3DjwYNJHL4xfplIj0bSHFIg6we5XhWYFqtE/vO3+Q==}
@@ -536,6 +549,10 @@ packages:
     resolution: {integrity: sha512-2WHyXj3OfHSgNyuzDbSxI1w2jgw5gkWSWhS7Qg4bWXx1nLk3jnbwfUeS0PSba3IzpTUWdHxBieELUzXRjQB2zg==}
     engines: {node: '>=0.8'}
 
+  kysely@0.28.5:
+    resolution: {integrity: sha512-rlB0I/c6FBDWPcQoDtkxi9zIvpmnV5xoIalfCMSMCa7nuA6VGA3F54TW9mEgX4DVf10sXAWCF5fDbamI/5ZpKA==}
+    engines: {node: '>=20.0.0'}
+
   lilconfig@3.1.3:
     resolution: {integrity: sha512-/vlFKAoH5Cgt3Ie+JLhRbwOsCQePABiU3tJ1egGvyQ+33R/vcwM2Zl2QR/LzjsBeItPt3oSVXapn+m4nQDvpzw==}
     engines: {node: '>=14'}
@@ -812,6 +829,12 @@ snapshots:
 
   '@biomejs/cli-win32-x64@1.9.4':
     optional: true
+
+  '@coji/kysely-duckdb-wasm@0.1.6(@duckdb/duckdb-wasm@1.29.0)(apache-arrow@17.0.0)(kysely@0.28.5)':
+    dependencies:
+      '@duckdb/duckdb-wasm': 1.29.0
+      apache-arrow: 17.0.0
+      kysely: 0.28.5
 
   '@duckdb/duckdb-wasm@1.29.0':
     dependencies:
@@ -1166,6 +1189,8 @@ snapshots:
   joycon@3.1.1: {}
 
   json-bignum@0.0.3: {}
+
+  kysely@0.28.5: {}
 
   lilconfig@3.1.3: {}
 

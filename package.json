@@ -1,25 +1,19 @@
 {
 	"name": "@alphatique/ducky",
-	"version": "0.10.0",
+	"version": "1.0.0",
 	"description": "ORM for DuckDB",
-	"main": "./dist/index.mjs",
-	"module": "./dist/index.mjs",
-	"types": "./dist/index.d.mts",
 	"exports": {
 		".": {
 			"import": "./dist/index.mjs",
 			"types": "./dist/index.d.mts"
 		},
-		"./parquet": {
-			"import": "./dist/parquet.mjs",
-			"types": "./dist/parquet.d.mts"
-		},
 		"./schema": {
 			"import": "./dist/schema/index.mjs",
 			"types": "./dist/schema/index.d.mts"
 		},
-		"./types": {
-			"types": "./dist/types.d.mts"
+		"./parquet": {
+			"import": "./dist/parquet.mjs",
+			"types": "./dist/parquet.d.mts"
 		}
 	},
 	"scripts": {
@@ -31,7 +25,9 @@
 	"license": "ISC",
 	"packageManager": "pnpm@10.15.0",
 	"dependencies": {
-		"@duckdb/duckdb-wasm": "1.29.0"
+		"@coji/kysely-duckdb-wasm": "^0.1.6",
+		"@duckdb/duckdb-wasm": "1.29.0",
+		"kysely": "^0.28.5"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",

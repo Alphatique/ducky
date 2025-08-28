@@ -1,4 +1,7 @@
+export type { DataType } from './data-types';
+
 export {
+	type Column,
 	bigint,
 	boolean,
 	date,
@@ -12,6 +15,11 @@ export {
 	uuid,
 } from './column';
 
-export { createTable } from './table';
+export { type Enum, createEnum } from './enum';
 
-export { createEnum } from './data-type/enum';
+export { type Table, createTable } from './table';
+
+import type { Enum } from './enum';
+import type { Table } from './table';
+
+export type Schema = Record<string, Table | Enum>;
