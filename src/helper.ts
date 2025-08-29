@@ -23,10 +23,10 @@ export function nullIf<T>(value: Expression<T>, nullValue: Expression<T>) {
 	return sql<T | null>`nullif(${value}, ${nullValue})`;
 }
 
-export function lower(value: Expression<string>) {
-	return sql<string>`lower(${value})`;
+export function lower(value: Expression<string | null>) {
+	return sql<string | null>`lower(${value})`;
 }
 
-export function upper(value: Expression<string>) {
-	return sql<string>`upper(${value})`;
+export function upper(value: Expression<string | null>) {
+	return sql<string | null>`upper(${value})`;
 }
