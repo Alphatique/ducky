@@ -72,6 +72,7 @@ type InsertBlob<S extends Schema> = <T extends keyof KyselySchema<S> & string>(
 
 export type Ducky<S extends Schema> = Kysely<KyselySchema<S>> & {
 	$schema: S;
+	$db: Promise<duckdb.AsyncDuckDB>;
 	$kyselySchema: KyselySchema<S>;
 	$inferEnum: InferEnum<S>;
 	$inferSelectable: InferSelectable<S>;
@@ -97,14 +98,15 @@ export function createDucky<S extends Schema>(
 		tableMappings: {},
 	});
 
-	const kysely = new Kysely<KyselySchema<S>>({
+	const ducky = new Kysely<KyselySchema<S>>({
 		dialect,
 		log: options.logger === 'console' ? ['query', 'error'] : undefined,
 	}) as Ducky<S>;
 
-	kysely.$schema = options.schema;
+	ducky.$db = dbPromise;
+	ducky.$schema = options.schema;
 
-	kysely.insertBlob = async (table, type, files) => {
+	ducky.insertBlob = async (table, type, files) => {
 		const db = await dbPromise;
 		const id = crypto.randomUUID();
 
@@ -119,7 +121,7 @@ export function createDucky<S extends Schema>(
 			),
 		);
 
-		await kysely.executeQuery(
+		await ducky.executeQuery(
 			CompiledQuery.raw(
 				`INSERT INTO ${doubleQuote(table)} SELECT * FROM read_${type}('${id}-*');`,
 			),
@@ -128,7 +130,7 @@ export function createDucky<S extends Schema>(
 		await Promise.all(files.map((_, i) => db.dropFile(`${id}-${i}`)));
 	};
 
-	return kysely;
+	return ducky;
 }
 
 async function applySchema(db: duckdb.AsyncDuckDB, schema: Schema) {
