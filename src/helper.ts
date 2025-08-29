@@ -1,4 +1,4 @@
-import { sql } from 'kysely';
+import { type Expression, sql } from 'kysely';
 
 export type Precision =
 	| 'century'
@@ -15,10 +15,18 @@ export type Precision =
 	| 'week'
 	| 'year';
 
-export function dateTrunc(part: Precision, date: unknown) {
+export function dateTrunc(part: Precision, date: Expression<Date>) {
 	return sql<Date>`date_trunc('${part}', ${date})`;
 }
 
-export function nullIf<T = unknown>(value: unknown, nullValue: unknown) {
-	return sql<T>`NULLIF(${value}, ${nullValue})`;
+export function nullIf<T>(value: Expression<T>, nullValue: Expression<T>) {
+	return sql<T | null>`nullif(${value}, ${nullValue})`;
+}
+
+export function lower(value: Expression<string>) {
+	return sql<string>`lower(${value})`;
+}
+
+export function upper(value: Expression<string>) {
+	return sql<string>`upper(${value})`;
 }
