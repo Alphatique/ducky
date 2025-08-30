@@ -27,9 +27,9 @@ export type Precision =
 	| 'year';
 
 export function dateTrunc(part: Precision, date: Expression<Date>) {
-	return sql<Date>`date_trunc(${part}, ${date})`;
+	return sql<Date>`date_trunc('${sql.raw(part)}', ${date})`;
 }
 
 export function strftime(date: Expression<Date>, format: string) {
-	return sql<string>`strftime(${date}, ${format})`;
+	return sql<string>`strftime(${date}, '${sql.raw(format)}')`;
 }
