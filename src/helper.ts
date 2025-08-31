@@ -4,11 +4,14 @@ export function nullIf<T>(value: Expression<T>, nullValue: Expression<T>) {
 	return sql<T | null>`nullif(${value}, ${nullValue})`;
 }
 
-export function lower(value: Expression<string | null>) {
-	return sql<string | null>`lower(${value})`;
+export function lower<T extends string | null>(value: Expression<T>) {
+	return sql<T extends null ? string | null : string>`lower(${value})`;
 }
-export function upper(value: Expression<string | null>) {
-	return sql<string | null>`upper(${value})`;
+export function upper<T extends string | null>(value: Expression<T>) {
+	return sql<T extends null ? string | null : string>`upper(${value})`;
+}
+export function round<T extends string | null>(value: Expression<T>) {
+	return sql<T extends null ? string | null : number>`round(${value})`;
 }
 
 export type Precision =
