@@ -10,9 +10,9 @@ export function lower<T extends string | null>(v: Expression<T>) {
 export function upper<T extends string | null>(v: Expression<T>) {
 	return sql<T extends null ? string | null : string>`upper(${v})`;
 }
-export function round<T extends string | null>(v: Expression<T>, s: number) {
+export function round<T extends number | null>(v: Expression<T>, s: number) {
 	return sql<
-		T extends null ? string | null : number
+		T extends null ? number | null : number
 	>`round(${v}, ${sql.raw(s.toString())})`;
 }
 
