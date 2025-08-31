@@ -4,14 +4,16 @@ export function nullIf<T>(value: Expression<T>, nullValue: Expression<T>) {
 	return sql<T | null>`nullif(${value}, ${nullValue})`;
 }
 
-export function lower<T extends string | null>(value: Expression<T>) {
-	return sql<T extends null ? string | null : string>`lower(${value})`;
+export function lower<T extends string | null>(v: Expression<T>) {
+	return sql<T extends null ? string | null : string>`lower(${v})`;
 }
-export function upper<T extends string | null>(value: Expression<T>) {
-	return sql<T extends null ? string | null : string>`upper(${value})`;
+export function upper<T extends string | null>(v: Expression<T>) {
+	return sql<T extends null ? string | null : string>`upper(${v})`;
 }
-export function round<T extends string | null>(value: Expression<T>) {
-	return sql<T extends null ? string | null : number>`round(${value})`;
+export function round<T extends string | null>(v: Expression<T>, s: number) {
+	return sql<
+		T extends null ? string | null : number
+	>`round(${v}, ${sql.raw(s.toString())})`;
 }
 
 export type Precision =
