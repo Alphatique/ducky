@@ -10,6 +10,14 @@ export function lower<T extends string | null>(v: Expression<T>) {
 export function upper<T extends string | null>(v: Expression<T>) {
 	return sql<T extends null ? string | null : string>`upper(${v})`;
 }
+
+export function floor<T extends number | null>(v: Expression<T>) {
+	return sql<T extends null ? number | null : number>`floor(${v})`;
+}
+
+export function ceil<T extends number | null>(v: Expression<T>) {
+	return sql<T extends null ? number | null : number>`ceil(${v})`;
+}
 export function round<T extends number | null>(v: Expression<T>, s: number) {
 	return sql<
 		T extends null ? number | null : number
